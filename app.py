@@ -14,7 +14,7 @@ def process_files(csv_files):
         if os.path.exists(excel_file_path):
             st.warning(f"{excel_file_name} already exists. Overwriting it.")
         df.to_excel(excel_file_path, index=False)
-        process_excel(excel_file_path)
+        process_excel(excel_file_path, excel_file_name)  # Pass excel_file_name here
 
 def process_excel_to_csv(excel_files):
     dfs = []
@@ -33,8 +33,8 @@ def process_excel_to_csv(excel_files):
     output_label.text(f'Converted to CSV: {output_file_csv_name}')
     history_listbox.write(output_file_csv_name)
 
-def process_excel(excel_file):
-    df = pd.read_excel(excel_file)
+def process_excel(excel_file_path, excel_file_name):
+    df = pd.read_excel(excel_file_path)
 
     if 'NO;"NPWP15";"Nama_WP"' in df.columns:
         split_columns = df['NO;"NPWP15";"Nama_WP"'].str.split(';', expand=True)
@@ -46,7 +46,7 @@ def process_excel(excel_file):
         st.warning("Column 'NO;NPWP15;Nama_WP' not found in the DataFrame.")
 
     df.drop(columns=['NO;"NPWP15";"Nama_WP"'], inplace=True)
-    output_file_name = os.path.splitext(excel_file.name)[0] + '_output.xlsx'
+    output_file_name = os.path.splitext(excel_file_name)[0] + '_output.xlsx'
     output_file_path = os.path.join('temp', output_file_name)
     df.to_excel(output_file_path, index=False)
     output_label.text(f'Output File: {output_file_name}')
