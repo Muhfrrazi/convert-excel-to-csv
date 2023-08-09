@@ -53,8 +53,9 @@ if csv_files:
     for file_path in output_excel_files:
         st.write(file_path)
 
+output_excel_names = []  # Initialize the list before the conditional block
+
 if excel_files:
-    output_excel_names = []
     for excel_file in excel_files:
         output_file_name = process_excel(excel_file, excel_file.name)
         output_excel_names.append(output_file_name)
