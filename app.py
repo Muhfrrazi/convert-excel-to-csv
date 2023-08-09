@@ -37,7 +37,11 @@ def process_excel(excel_file):
     df = pd.read_excel(excel_file)
 
     if 'NO;"NPWP15";"Nama_WP"' in df.columns:
-        df[['NO', 'NPWP15', 'Nama_WP']] = df['NO;"NPWP15";"Nama_WP"'].str.split(';', expand=True)
+        split_columns = df['NO;"NPWP15";"Nama_WP"'].str.split(';', expand=True)
+        if split_columns.shape[1] == 3:
+            df[['NO', 'NPWP15', 'Nama_WP']] = split_columns
+        else:
+            st.warning("Unexpected format in 'NO;NPWP15;Nama_WP' column.")
     else:
         st.warning("Column 'NO;NPWP15;Nama_WP' not found in the DataFrame.")
 
