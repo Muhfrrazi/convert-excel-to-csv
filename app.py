@@ -55,13 +55,14 @@ if csv_files:
 
 output_excel_names = []  # Initialize the list before the conditional block
 
-# Setelah loop yang memproses file Excel
+# Inside the loop that processes Excel files
 if excel_files:
     output_excel_names = []
     for excel_file in excel_files:
         output_file_name = process_excel(excel_file, excel_file.name)
         output_excel_names.append(output_file_name)
-    
+        conversion_history.append(output_file_name)  # Append to conversion history
+
     st.write('Conversion Log:')
     for file_name in output_excel_names:
         st.write(file_name)
@@ -71,6 +72,11 @@ if excel_files:
         output_path = os.path.join('temp', output_file_name)
         if os.path.exists(output_path):
             st.download_button(f"Download {output_file_name}", output_path)
+
+# After the loops, you can use the conversion history
+st.write('Conversion Log:')
+for item in conversion_history:
+    st.write(item)
 
 if st.button("Clear Log"):
     conversion_history.clear()
