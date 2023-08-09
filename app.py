@@ -54,7 +54,9 @@ if csv_files:
     st.write('Conversion Log:')
     for file_path in output_excel_files:
         st.write(file_path)
-        st.download_button(f"Download {os.path.basename(file_path)}", file_path, file_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        # Tambahkan tombol unduh dengan tipe file Excel (xlsx) yang sesuai
+        file_name = os.path.basename(file_path)
+        st.download_button(f"Download {file_name}", file_path, file_name=file_name, key=file_name)
 
 output_excel_names = []  # Initialize the list before the conditional block
 conversion_history = []
