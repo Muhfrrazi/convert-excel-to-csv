@@ -3,6 +3,7 @@ import pandas as pd
 import os
 
 def process_files(csv_files):
+    output_excel_files = []
     for csv_file in csv_files:
         df = pd.read_csv(csv_file, sep=";")
         if 'NO;"NPWP15";"Nama_WP"' in df.columns:
@@ -14,27 +15,12 @@ def process_files(csv_files):
         if os.path.exists(excel_file_path):
             st.warning(f"{excel_file_name} already exists. Overwriting it.")
         df.to_excel(excel_file_path, index=False)
-        process_excel(excel_file_path, excel_file_name)  # Pass excel_file_name here
+        output_excel_files.append(excel_file_path)
+    
+    return output_excel_files
 
-def process_excel_to_csv(excel_files):
-    dfs = []
-    for excel_file in excel_files:
-        df = pd.read_excel(excel_file)
-        df = df.applymap(lambda x: x.replace('"', '') if isinstance(x, str) else x)
-        dfs.append(df)
-
-    combined_df = pd.concat(dfs, ignore_index=True)
-    output_file_csv_name = os.path.splitext(excel_files[0].name)[0] + '_combined_output.csv'
-    output_file_csv_path = os.path.join('temp', output_file_csv_name)
-
-    if os.path.exists(output_file_csv_path):
-        st.warning(f"{output_file_csv_name} already exists. Overwriting it.")
-    combined_df.to_csv(output_file_csv_path, index=False, header=True)
-    output_label.text(f'Converted to CSV: {output_file_csv_name}')
-    history_listbox.write(output_file_csv_name)
-
-def process_excel(excel_file_path, excel_file_name):
-    df = pd.read_excel(excel_file_path)
+def process_excel(excel_file, excel_file_name):
+    df = pd.read_excel(excel_file)
 
     if 'NO;"NPWP15";"Nama_WP"' in df.columns:
         split_columns = df['NO;"NPWP15";"Nama_WP"'].str.split(';', expand=True)
@@ -49,7 +35,7 @@ def process_excel(excel_file_path, excel_file_name):
     output_file_name = os.path.splitext(excel_file_name)[0] + '_output.xlsx'
     output_file_path = os.path.join('temp', output_file_name)
     df.to_excel(output_file_path, index=False)
-    output_label.text(f'Output File: {output_file_name}')
+    return output_file_name
 
 st.title('File Converter')
 
@@ -62,10 +48,26 @@ output_label = st.empty()
 history_listbox = st.empty()
 
 if csv_files:
-    process_files(csv_files)
+    output_excel_files = process_files(csv_files)
+    st.write('Conversion Log:')
+    for file_path in output_excel_files:
+        st.write(file_path)
 
 if excel_files:
-    process_excel_to_csv(excel_files)
+    output_excel_names = []
+    for excel_file in excel_files:
+        output_file_name = process_excel(excel_file, excel_file.name)
+        output_excel_names.append(output_file_name)
+    
+    st.write('Conversion Log:')
+    for file_name in output_excel_names:
+        st.write(file_name)
+
+# Display download buttons for the converted Excel files
+for output_file_name in output_excel_names:
+    output_path = os.path.join('temp', output_file_name)
+    if os.path.exists(output_path):
+        st.download_button(f"Download {output_file_name}", output_path)
 
 st.write('Conversion Log:')
 conversion_history = []
