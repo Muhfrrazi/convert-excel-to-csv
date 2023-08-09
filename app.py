@@ -54,6 +54,7 @@ if csv_files:
         st.write(file_path)
 
 output_excel_names = []  # Initialize the list before the conditional block
+conversion_history = []
 
 # Inside the loop that processes Excel files
 if excel_files:
