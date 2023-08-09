@@ -55,7 +55,9 @@ if csv_files:
 
 output_excel_names = []  # Initialize the list before the conditional block
 
+# Setelah loop yang memproses file Excel
 if excel_files:
+    output_excel_names = []
     for excel_file in excel_files:
         output_file_name = process_excel(excel_file, excel_file.name)
         output_excel_names.append(output_file_name)
@@ -64,14 +66,11 @@ if excel_files:
     for file_name in output_excel_names:
         st.write(file_name)
 
-# Display download buttons for the converted Excel files
-for output_file_name in output_excel_names:
-    output_path = os.path.join('temp', output_file_name)
-    if os.path.exists(output_path):
-        st.download_button(f"Download {output_file_name}", output_path)
-
-st.write('Conversion Log:')
-conversion_history = []
+    # Tambahkan tombol unduh untuk setiap file yang dihasilkan
+    for output_file_name in output_excel_names:
+        output_path = os.path.join('temp', output_file_name)
+        if os.path.exists(output_path):
+            st.download_button(f"Download {output_file_name}", output_path)
 
 if st.button("Clear Log"):
     conversion_history.clear()
