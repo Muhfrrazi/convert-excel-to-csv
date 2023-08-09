@@ -48,31 +48,40 @@ output_label = st.empty()
 history_listbox = st.empty()
 
 if csv_files:
-    output_excel_files = process_files(csv_files)
+    output_excel_files = process_files(csv_files)  # Get the output Excel files
+
     st.write('Conversion Log:')
     for file_path in output_excel_files:
         st.write(file_path)
 
+    # Tambahkan tombol unduh dengan tipe file Excel (xlsx) yang sesuai
+    for output_file_path in output_excel_files:
+        if os.path.exists(output_file_path):
+            output_file_name = os.path.basename(output_file_path)
+            st.download_button(f"Download {output_file_name}", output_file_path, file_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+
 output_excel_names = []  # Initialize the list before the conditional block
 conversion_history = []
 
-# Inside the loop that processes Excel files
+# Setelah loop yang memproses file Excel
 if excel_files:
-    output_excel_names = []
+    output_excel_files = []  # Initialize list to store output Excel file paths
+    
     for excel_file in excel_files:
         output_file_name = process_excel(excel_file, excel_file.name)
-        output_excel_names.append(output_file_name)
-        conversion_history.append(output_file_name)  # Append to conversion history
-
+        output_excel_files.append(output_file_name)
+    
     st.write('Conversion Log:')
-    for file_name in output_excel_names:
+    for file_name in output_excel_files:
         st.write(file_name)
 
-    # Tambahkan tombol unduh untuk setiap file yang dihasilkan
-    for output_file_name in output_excel_names:
+    # Tambahkan tombol unduh dengan tipe file Excel (xlsx) yang sesuai
+    for output_file_name in output_excel_files:
         output_path = os.path.join('temp', output_file_name)
         if os.path.exists(output_path):
-            st.download_button(f"Download {output_file_name}", output_path)
+            st.download_button(f"Download {output_file_name}", output_path, file_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
 
 # After the loops, you can use the conversion history
 st.write('Conversion Log:')
