@@ -77,10 +77,15 @@ if excel_files:
         st.write(file_name)
 
     # Tambahkan tombol unduh dengan tipe file Excel (xlsx) yang sesuai
-    for output_file_name in output_excel_files:
-        output_path = os.path.join('temp', output_file_name)
-        if os.path.exists(output_path):
-            st.download_button(f"Download {output_file_name}", output_path, file_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    # Inside the loop for processing Excel files
+for output_file_name in output_excel_files:
+    output_path = os.path.join('temp', output_file_name)
+    if os.path.exists(output_path):
+        output_file_name = os.path.basename(output_file_path)
+        st.download_button(
+            label=f"Download {output_file_name}",
+            data=output_path,
+            file_name=output_file_name)
 
 
 # After the loops, you can use the conversion history
